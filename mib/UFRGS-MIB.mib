@@ -1,0 +1,13 @@
+
+UFRGS-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	enterprises
+		FROM RFC1155-SMI;
+
+ufrgs          OBJECT IDENTIFIER ::= { enterprises 12619 }
+END
+
+
+-- This MIB was created using NuDesign Technologies' Visual MIBuilder (Ver 5.2).
+
