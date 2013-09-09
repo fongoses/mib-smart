@@ -2,12 +2,10 @@
 SMART-MIB DEFINITIONS ::= BEGIN
 
 IMPORTS
-	NetworkAddress, Counter,TimeTicks, Gauge
+	NetworkAddress, TimeTicks, Gauge
 		FROM RFC1155-SMI
 	OBJECT-TYPE
 		FROM RFC-1212
-	TRAP-TYPE
-		FROM RFC-1215
 	ufrgs
 		FROM UFRGS-MIB;
 
@@ -96,140 +94,13 @@ bootDate  OBJECT-TYPE
 		"Data da última inicialização no formato 'YYYY-MM-DD HH24:MM:SS'"
 	::= { general 5 }
 
-gateTimeUp  OBJECT-TYPE
-	SYNTAX     TimeTicks
+installationDate  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(16))
 	ACCESS     read-write
 	STATUS     mandatory
 	DESCRIPTION 
-		"Tempo que a cancela deve permandecer aberta antes de baixar, 
-		caso nenhum carro passe."
+		"Data da instalação do equipamento no formato 'YYYY-MM-DD HH24:MM:SS'"
 	::= { general 6 }
-
-gateStatus  OBJECT-TYPE
-	SYNTAX     Gauge
-	ACCESS     read-write
-	STATUS     optional
-	DESCRIPTION 
-		"Status da cancela:
-		0 - Fechada
-		1 - Aberta"
-	::= { general 7 }
-
-carStatus  OBJECT-TYPE
-	SYNTAX     Gauge
-	ACCESS     read-only
-	STATUS     optional
-	DESCRIPTION 
-		"Indica se o sensor de movimento detectou um carro parado fazendo o pagamento:
-		0 - Não tem carro parado na cancela
-		1 - Possui um carro parado na cancela"
-	::= { general 8 }
-
-lastCrashCode  OBJECT-TYPE
-	SYNTAX     INTEGER
-	ACCESS     read-only
-	STATUS     mandatory
-	DESCRIPTION 
-		"Código do último erro."
-	::= { general 9 }
-
-cardsAcceptedTable  OBJECT-TYPE
-	SYNTAX SEQUENCE OF CardsAcceptedEntry
-	ACCESS     not-accessible
-	STATUS     mandatory
-	DESCRIPTION 
-		"Tabela que contém os tipos de pagamentos aceitos."
-	::= { cards 1 }
-
-cardsAcceptedEntry  OBJECT-TYPE
-	SYNTAX 	CardsAcceptedEntry
-	ACCESS     not-accessible
-	STATUS     mandatory
-	DESCRIPTION 
-		""
-	INDEX { cardID }
-	::= { cardsAcceptedTable 1 }
-
-CardsAcceptedEntry ::= SEQUENCE {
-	cardID
-		INTEGER,
-	cardDescription
-		OCTET STRING,
-	cardCount
-		Counter
-}
-
-cardID  OBJECT-TYPE
-	SYNTAX     INTEGER
-	ACCESS     read-only
-	STATUS     mandatory
-	DESCRIPTION 
-		"Código do tipo de pagamento."
-	::= { cardsAcceptedEntry 1 }
-
-cardDescription  OBJECT-TYPE
-	SYNTAX     OCTET STRING (SIZE(0..255))
-	ACCESS     read-only
-	STATUS     optional
-	DESCRIPTION 
-		"Descrição do tipo de pagamento."
-	::= { cardsAcceptedEntry 2 }
-
-cardCount  OBJECT-TYPE
-	SYNTAX     Counter
-	ACCESS     read-only
-	STATUS     mandatory
-	DESCRIPTION 
-		"Número de vezes que o cartão foi usado desde a última reinicialização do equipamento."
-	::= { cardsAcceptedEntry 3 }
-
-gateOpen  OBJECT-TYPE
-	SYNTAX     Counter
-	ACCESS     read-only
-	STATUS     mandatory
-	DESCRIPTION 
-		"Número de vezes que a cancela abriu."
-	::= { stats 1 }
-
-gateClose  OBJECT-TYPE
-	SYNTAX     Counter
-	ACCESS     read-only
-	STATUS     mandatory
-	DESCRIPTION 
-		"Número de vezes que a cancela fechou."
-	::= { stats 2 }
-
-carsPassed  OBJECT-TYPE
-	SYNTAX     Counter
-	ACCESS     read-only
-	STATUS     mandatory
-	DESCRIPTION 
-		"Número de carros que passaram pelo sensor de movimento da cancela."
-	::= { stats 3 }
-
-crashCount  OBJECT-TYPE
-	SYNTAX     Counter
-	ACCESS     read-only
-	STATUS     mandatory
-	DESCRIPTION 
-		"Número de vezes que houve pane na cancela."
-	::= { stats 4 }
-
-trapCrash  TRAP-TYPE
-	ENTERPRISE smart
-	VARIABLES { lastCrashCode }
-	DESCRIPTION 
-		""
-	::= 1
-
-
-trapFirmwareUpdate  TRAP-TYPE
-	ENTERPRISE smart
-	VARIABLES { firmware }
-	DESCRIPTION 
-		""
-	::= 2
-
 
 openingTime  OBJECT-TYPE
 	SYNTAX     TimeTicks
