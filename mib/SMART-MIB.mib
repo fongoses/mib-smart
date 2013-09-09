@@ -2,47 +2,89 @@
 SMART-MIB DEFINITIONS ::= BEGIN
 
 IMPORTS
-	enterprises, Gauge, IpAddress, 
-	Counter
+	TimeTicks, Gauge
 		FROM RFC1155-SMI
 	OBJECT-TYPE
 		FROM RFC-1212
 	ufrgs
 		FROM UFRGS-MIB;
 
-smart           OBJECT IDENTIFIER ::= { ufrgs 1 }
+smart                OBJECT IDENTIFIER ::= { ufrgs 1 }
 
-fsFilesSent  OBJECT-TYPE
-	SYNTAX     Counter
+-- Informações gerais como verão do firmware, nome da empresa, data de instalação, 
+-- tempo que está ligado, data da última inicialização
+
+general              OBJECT IDENTIFIER ::= { smart 1 }
+
+-- Colocar informação sobre os tipos de cartões aceitos e quanto de cada tipo de cartão 
+-- foi usado, considerando as diferentes formas possíveis de pagamento: nfc, bluetooth, 
+-- código de barras, qr code.
+
+cards                OBJECT IDENTIFIER ::= { smart 2 }
+
+-- Quantas vezes a cancela abriu, quantos carros passaram pelo sensor de movimento, 
+-- vezes que aconteceu alguma pane.
+-- 
+
+stats                OBJECT IDENTIFIER ::= { smart 3 }
+
+-- Dados elétricos e mecânicos... tensão de entrada, tensão do motor, etc.
+
+hw                   OBJECT IDENTIFIER ::= { smart 4 }
+
+-- Dados do bluetooth, ethernet, nfc, wifi, etc... número de pacotes recebidos, 
+-- enviados, velocidade
+-- 
+
+network              OBJECT IDENTIFIER ::= { smart 5 }
+
+info  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(255))
 	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
-		"Arquivos enviados."
-	::= { smart 1 }
+		"Informa dados da empresa fornecedora da cancela."
+	::= { general 1 }
 
-fsRemoteServer  OBJECT-TYPE
-	SYNTAX     IpAddress
-	ACCESS     read-write
+firmware  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(255))
+	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
-		"Endereço do servidor remoto."
-	::= { smart 2 }
+		"Versão do firmware instalado na cancela."
+	::= { general 2 }
 
-fsRemoteServerPort  OBJECT-TYPE
+build  OBJECT-TYPE
 	SYNTAX     Gauge
-	ACCESS     read-write
+	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
-		"Porta do servidor remoto."
-	::= { smart 3 }
+		"Número de Build do Firmware."
+	::= { general 3 }
 
-fsLocalServerPort  OBJECT-TYPE
-	SYNTAX     Gauge
+bootTime  OBJECT-TYPE
+	SYNTAX     TimeTicks
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Tempo desde que o equipamento foi reinicializado."
+	::= { general 4 }
+
+bootDate  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(16))
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Data da última inicialização no formato 'YYYY-MM-DD HH24:MM:SS'"
+	::= { general 5 }
+
+installationDate  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(16))
 	ACCESS     read-write
 	STATUS     mandatory
 	DESCRIPTION 
-		"Porta do servidor local."
-	::= { smart 4 }
+		"Data da instalação do equipamento no formato 'YYYY-MM-DD HH24:MM:SS'"
+	::= { general 6 }
 END
 
 
