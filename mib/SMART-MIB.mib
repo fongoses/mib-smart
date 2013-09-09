@@ -9,6 +9,22 @@ IMPORTS
 	ufrgs
 		FROM UFRGS-MIB;
 
+
+-- Esta é uma MIB para o controle de uma cancela automática que pode ser encontrada 
+-- em shoppings e estacionamentos.
+-- O gerenciamento deve ser o mais simples possível, pois a cancela não dipões de 
+-- muitos recursos de hardware disponíveis (geralmente usa um microcontrolador).
+-- 
+-- Disciplina Gerência e Aplicações em Redes (INF01015)
+-- Turma U 
+-- Professor Luciano Paschoal gaspary
+-- 
+-- Componentes do Grupo:
+-- * Luiz Gustavo Frozi de Castro e Souza  - Cartão  96957
+-- * Mário César Gasparoni Jr. - Cartão  151480
+-- 
+-- Data: Setembro de 2013
+
 smart                OBJECT IDENTIFIER ::= { ufrgs 1 }
 
 -- Informações gerais como verão do firmware, nome da empresa, data de instalação, 
