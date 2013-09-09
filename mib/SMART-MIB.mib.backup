@@ -1,0 +1,341 @@
+
+SMART-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	NetworkAddress, Counter,TimeTicks, Gauge
+		FROM RFC1155-SMI
+	OBJECT-TYPE
+		FROM RFC-1212
+	TRAP-TYPE
+		FROM RFC-1215
+	ufrgs
+		FROM UFRGS-MIB;
+
+
+-- Esta é uma MIB para o controle de uma cancela automática que pode ser encontrada 
+-- em shoppings e estacionamentos.
+-- O gerenciamento deve ser o mais simples possível, pois a cancela não dipões de 
+-- muitos recursos de hardware disponíveis (geralmente usa um microcontrolador).
+-- 
+-- Disciplina Gerência e Aplicações em Redes (INF01015)
+-- Turma U 
+-- Professor Luciano Paschoal gaspary
+-- 
+-- Componentes do Grupo:
+-- * Luiz Gustavo Frozi de Castro e Souza  - Cartão  96957
+-- * Mário César Gasparoni Jr. - Cartão  151480
+-- 
+-- Data: Setembro de 2013
+
+smart                OBJECT IDENTIFIER ::= { ufrgs 1 }
+
+-- Informações gerais como verão do firmware, nome da empresa, data de instalação, 
+-- tempo que está ligado, data da última inicialização
+
+general              OBJECT IDENTIFIER ::= { smart 1 }
+
+-- Colocar informação sobre os tipos de cartões aceitos e quanto de cada tipo de cartão 
+-- foi usado, considerando as diferentes formas possíveis de pagamento: nfc, bluetooth, 
+-- código de barras, qr code.
+
+cards                OBJECT IDENTIFIER ::= { smart 2 }
+
+-- Quantas vezes a cancela abriu, quantos carros passaram pelo sensor de movimento, 
+-- vezes que aconteceu alguma pane.
+-- 
+
+stats                OBJECT IDENTIFIER ::= { smart 3 }
+
+-- Dados elétricos e mecânicos... tensão de entrada, tensão do motor, etc.
+
+hw                   OBJECT IDENTIFIER ::= { smart 4 }
+
+-- Dados do bluetooth, ethernet, nfc, wifi, etc... número de pacotes recebidos, 
+-- enviados, velocidade
+-- 
+
+network              OBJECT IDENTIFIER ::= { smart 5 }
+
+info  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(255))
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Informa dados da empresa fornecedora da cancela."
+	::= { general 1 }
+
+firmware  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(255))
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Versão do firmware instalado na cancela."
+	::= { general 2 }
+
+build  OBJECT-TYPE
+	SYNTAX     Gauge
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Número de Build do Firmware."
+	::= { general 3 }
+
+bootTime  OBJECT-TYPE
+	SYNTAX     TimeTicks
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Tempo desde que o equipamento foi reinicializado."
+	::= { general 4 }
+
+bootDate  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(16))
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Data da última inicialização no formato 'YYYY-MM-DD HH24:MM:SS'"
+	::= { general 5 }
+
+gateTimeUp  OBJECT-TYPE
+	SYNTAX     TimeTicks
+	ACCESS     read-write
+	STATUS     mandatory
+	DESCRIPTION 
+		"Tempo que a cancela deve permandecer aberta antes de baixar, 
+		caso nenhum carro passe."
+	::= { general 6 }
+
+gateStatus  OBJECT-TYPE
+	SYNTAX     Gauge
+	ACCESS     read-write
+	STATUS     optional
+	DESCRIPTION 
+		"Status da cancela:
+		0 - Fechada
+		1 - Aberta"
+	::= { general 7 }
+
+carStatus  OBJECT-TYPE
+	SYNTAX     Gauge
+	ACCESS     read-only
+	STATUS     optional
+	DESCRIPTION 
+		"Indica se o sensor de movimento detectou um carro parado fazendo o pagamento:
+		0 - Não tem carro parado na cancela
+		1 - Possui um carro parado na cancela"
+	::= { general 8 }
+
+lastCrashCode  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Código do último erro."
+	::= { general 9 }
+
+cardsAcceptedTable  OBJECT-TYPE
+	SYNTAX SEQUENCE OF CardsAcceptedEntry
+	ACCESS     not-accessible
+	STATUS     mandatory
+	DESCRIPTION 
+		"Tabela que contém os tipos de pagamentos aceitos."
+	::= { cards 1 }
+
+cardsAcceptedEntry  OBJECT-TYPE
+	SYNTAX 	CardsAcceptedEntry
+	ACCESS     not-accessible
+	STATUS     mandatory
+	DESCRIPTION 
+		""
+	INDEX { cardID }
+	::= { cardsAcceptedTable 1 }
+
+CardsAcceptedEntry ::= SEQUENCE {
+	cardID
+		INTEGER,
+	cardDescription
+		OCTET STRING,
+	cardCount
+		Counter
+}
+
+cardID  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Código do tipo de pagamento."
+	::= { cardsAcceptedEntry 1 }
+
+cardDescription  OBJECT-TYPE
+	SYNTAX     OCTET STRING (SIZE(0..255))
+	ACCESS     read-only
+	STATUS     optional
+	DESCRIPTION 
+		"Descrição do tipo de pagamento."
+	::= { cardsAcceptedEntry 2 }
+
+cardCount  OBJECT-TYPE
+	SYNTAX     Counter
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Número de vezes que o cartão foi usado desde a última reinicialização do equipamento."
+	::= { cardsAcceptedEntry 3 }
+
+gateOpen  OBJECT-TYPE
+	SYNTAX     Counter
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Número de vezes que a cancela abriu."
+	::= { stats 1 }
+
+gateClose  OBJECT-TYPE
+	SYNTAX     Counter
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Número de vezes que a cancela fechou."
+	::= { stats 2 }
+
+carsPassed  OBJECT-TYPE
+	SYNTAX     Counter
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Número de carros que passaram pelo sensor de movimento da cancela."
+	::= { stats 3 }
+
+crashCount  OBJECT-TYPE
+	SYNTAX     Counter
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Número de vezes que houve pane na cancela."
+	::= { stats 4 }
+
+trapCrash  TRAP-TYPE
+	ENTERPRISE smart
+	VARIABLES { lastCrashCode }
+	DESCRIPTION 
+		""
+	::= 1
+
+
+trapFirmwareUpdate  TRAP-TYPE
+	ENTERPRISE smart
+	VARIABLES { firmware }
+	DESCRIPTION 
+		""
+	::= 2
+
+
+openingTime  OBJECT-TYPE
+	SYNTAX     TimeTicks
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Tempo necessario para abertura total da cancela."
+	::= { hw 1 }
+
+inputVoltage  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		""
+	::= { hw 2 }
+
+motorVoltage  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		""
+	::= { hw 3 }
+
+nfcSignalStrength  OBJECT-TYPE
+	SYNTAX     Gauge
+	ACCESS     read-write
+	STATUS     optional
+	DESCRIPTION 
+		"Potencia atual do sinal NFC."
+	::= { hw 4 }
+
+btSignalStrength  OBJECT-TYPE
+	SYNTAX     Gauge
+	ACCESS     read-only
+	STATUS     optional
+	DESCRIPTION 
+		"Potencia da interface de bluetooth."
+	::= { hw 5 }
+
+btMacAddress  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Mac Address da interface de bluetooth."
+	::= { network 1 }
+
+btPin  OBJECT-TYPE
+	SYNTAX     OCTET STRING
+	ACCESS     read-write
+	STATUS     mandatory
+	DESCRIPTION 
+		"Pin da interface de bluetooth."
+	::= { network 2 }
+
+ifCount  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-write
+	STATUS     mandatory
+	DESCRIPTION 
+		"Numero de interfaces de rede (802.3 e 802.11) existentes."
+	::= { network 3 }
+
+ifTable  OBJECT-TYPE
+	SYNTAX SEQUENCE OF IfEntry
+	ACCESS     not-accessible
+	STATUS     mandatory
+	DESCRIPTION 
+		"Tabela contendo informacoes de interfaces de rede."
+	::= { network 4 }
+
+ifEntry  OBJECT-TYPE
+	SYNTAX 	IfEntry
+	ACCESS     not-accessible
+	STATUS     mandatory
+	DESCRIPTION 
+		""
+	INDEX { ifMacAddress }
+	::= { ifTable 1 }
+
+IfEntry ::= SEQUENCE {
+	ifType
+		INTEGER,
+	ifMacAddress
+		NetworkAddress
+}
+
+ifType  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Tipo da interface de rede (wireless  ou ethernet)"
+	::= { ifEntry 1 }
+
+ifMacAddress  OBJECT-TYPE
+	SYNTAX     NetworkAddress
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Mac Address da interface de rede."
+	::= { ifEntry 2 }
+END
+
+
+-- This MIB was created using NuDesign Technologies' Visual MIBuilder (Ver 5.2).
+
