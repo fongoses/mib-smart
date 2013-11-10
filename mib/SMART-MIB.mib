@@ -29,7 +29,7 @@ IMPORTS
 
 smart                OBJECT IDENTIFIER ::= { ufrgs 1 }
 
--- Informações gerais como versão do firmware, nome da empresa, data de instalação, 
+-- Informações gerais como verão do firmware, nome da empresa, data de instalação, 
 -- tempo que está ligado, data da última inicialização
 
 general              OBJECT IDENTIFIER ::= { smart 1 }
