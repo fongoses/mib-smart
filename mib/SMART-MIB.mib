@@ -272,7 +272,7 @@ btSignalStrength  OBJECT-TYPE
 	::= { hw 5 }
 
 btMacAddress  OBJECT-TYPE
-	SYNTAX     INTEGER
+	SYNTAX     NetworkAddress
 	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
@@ -309,22 +309,24 @@ ifEntry  OBJECT-TYPE
 	STATUS     mandatory
 	DESCRIPTION 
 		""
-	INDEX { ifMacAddress }
+	INDEX { ifId }
 	::= { ifTable 1 }
 
 IfEntry ::= SEQUENCE {
-	ifType
-		INTEGER,
+    ifId
+        INTEGER,
 	ifMacAddress
-		NetworkAddress
+		NetworkAddress,
+	ifType
+		INTEGER
 }
 
-ifType  OBJECT-TYPE
+ifId  OBJECT-TYPE
 	SYNTAX     INTEGER
 	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
-		"Tipo da interface de rede (wireless  ou ethernet)"
+		"Id da interface de rede (wireless  ou ethernet)"
 	::= { ifEntry 1 }
 
 ifMacAddress  OBJECT-TYPE
@@ -334,8 +336,14 @@ ifMacAddress  OBJECT-TYPE
 	DESCRIPTION 
 		"Mac Address da interface de rede."
 	::= { ifEntry 2 }
+
+ifType  OBJECT-TYPE
+	SYNTAX     INTEGER
+	ACCESS     read-only
+	STATUS     mandatory
+	DESCRIPTION 
+		"Tipo da interface de rede (wireless  ou ethernet)"
+	::= { ifEntry 3 }
+
 END
-
-
--- This MIB was created using NuDesign Technologies' Visual MIBuilder (Ver 5.2).
 

@@ -1,34 +1,62 @@
 
 
+
+OBS: O nosso agente cria duas comunidades: uma referente a mib-2, que se chama 'public'
+e a outra referente a mib da ufrgs  (que inclui toda nossa mib), que se chama private.
+
 ###CONSULTAS SOBRE A MIB2
 Setando sysContact:
 comando:
-    $snmpset -v 1 -c private 127.0.0.1 1.3.6.1.2.1.1.4.0 s "mario@mario.com"
+	snmpset -v 1 -c public 192.168.57.1 1.3.6.1.2.1.1.4.0 s "mario@mario.com"
 resposta:
     iso.3.6.1.2.1.1.4.0 = STRING: "mario@mario.com"
 
 Fazendo um get no sysContact:
 comando:
-    $snmpget -v1 -c private 127.0.0.1 1.3.6.1.2.1.1.4.0
+    snmpget -v1 -c public 192.168.57.1 1.3.6.1.2.1.1.4.0
 resposta:
     iso.3.6.1.2.1.1.4.0 = STRING: "mario@mario.com"
 
 
 
-#####Consultas sobre nossa mib (smartmib)
+#####Consultas sobre nossa mib (smartmib, privada)
 Raiz da miba da Ufrgs(OID): 1.3.6.1.4.1.12619
 Raiz da smartmib (OID): 1.3.6.1.4.1.12619.1
 
 #Consultas no Grupo general (smartmib.1 ou 1.3.6.1.4.1.12619.1.1):
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.1.0
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.2.0
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.3.0
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.4.0
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.5.0
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.6.0
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.7.0
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.8.0
-snmpget -v1 -c public 192.168.57.1 1.3.6.1.4.1.12619.1.1.9.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.1.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.2.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.3.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.4.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.5.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.6.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.7.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.8.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.9.0
+#gravacao no grupo general
+	snmpset -v 1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.1.0 s "mario@mario.com"
+
 
 #Consultas Grupo Cards ( smartmib.1 ou 1.3.6.1.4.1.12619.1.1 ):
 ...
+
+
+
+#Consultas Grupo Stats
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.3.1.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.3.2.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.3.3.0
+
+#Consultas Grupo hw
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.4.1.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.4.2.0
+	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.4.3.0
+
+
+#Consultas Grupo Interfaces
+
+
+
+
+
+
