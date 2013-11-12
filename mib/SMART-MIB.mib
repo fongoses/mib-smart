@@ -107,7 +107,7 @@ gateTimeUp  OBJECT-TYPE
 
 gateStatus  OBJECT-TYPE
 	SYNTAX     Gauge
-	ACCESS     read-write
+	ACCESS     read-only
 	STATUS     optional
 	DESCRIPTION 
 		"Status da cancela:
@@ -244,7 +244,7 @@ inputVoltage  OBJECT-TYPE
 	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
-		""
+		"Voltagem do dispositivo controlador da cancela"
 	::= { hw 2 }
 
 motorVoltage  OBJECT-TYPE
@@ -252,15 +252,15 @@ motorVoltage  OBJECT-TYPE
 	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
-		""
+		"Voltagem do motor da cancela"
 	::= { hw 3 }
 
 nfcSignalStrength  OBJECT-TYPE
 	SYNTAX     Gauge
-	ACCESS     read-write
+	ACCESS     read-only
 	STATUS     optional
 	DESCRIPTION 
-		"Potencia atual do sinal NFC."
+		"Potencia atual do sinal da interface NFC."
 	::= { hw 4 }
 
 btSignalStrength  OBJECT-TYPE
@@ -268,7 +268,7 @@ btSignalStrength  OBJECT-TYPE
 	ACCESS     read-only
 	STATUS     optional
 	DESCRIPTION 
-		"Potencia da interface de bluetooth."
+		"Potencia do sinal da interface de bluetooth."
 	::= { hw 5 }
 
 btMacAddress  OBJECT-TYPE
@@ -289,7 +289,7 @@ btPin  OBJECT-TYPE
 
 ifCount  OBJECT-TYPE
 	SYNTAX     INTEGER
-	ACCESS     read-write
+	ACCESS     read
 	STATUS     mandatory
 	DESCRIPTION 
 		"Numero de interfaces de rede (802.3 e 802.11) existentes."

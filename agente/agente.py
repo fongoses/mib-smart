@@ -11,8 +11,15 @@ from pysnmp.proto import rfc1155
 epochBoot=time.time()
 dataBoot=time.ctime(epochBoot)
 tempoCancelaAberta = 60
-macAddressBt='FF:FF:FF:FF:A2:23:32:45'
+macAddressBt='FF:FF:A2:23:32:45'
 pinBt='2354'
+numeroTotalInterfacesRede=3
+
+tempoAbertura=5
+voltagemControlador=5
+voltagemMotor=110
+potenciaSinalNfc=4
+potenciaSinalBt=6
 
 #----------------------------------------------------#
 #CONFIGURACAO DO AGENTE--------------------------#
@@ -22,7 +29,8 @@ arqConfigName = 'agente.conf'
    agenteIP = arqConfig.readline()
    arqConfig.close()
 else:'''
-agenteIP = '192.168.0.105'
+#agenteIP = '192.168.0.105'
+agenteIP = '127.0.0.1'
 
 # Create SNMP engine with autogenernated engineID and pre-bound
 # to socket transport dispatcher
@@ -160,11 +168,14 @@ mibBuilder.exportSymbols(
     MibScalar(stats.name+(1,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(1,), (0,), v1.Counter(),0),
     MibScalar(stats.name+(2,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(2,), (0,), v1.Counter(),0),
     MibScalar(stats.name+(3,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(3,), (0,), v1.Counter(),0),
+    MibScalar(stats.name+(4,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(4,), (0,), v1.Counter(),0),
 
     #----smartmib.hw----#
-    MibScalar(hw.name+(1,), v1.TimeTicks()), MyStaticMibScalarInstance(hw.name+(1,), (0,), v1.TimeTicks(),0),
-    MibScalar(hw.name+(2,), v1.Integer()), MyStaticMibScalarInstance(hw.name+(2,), (0,), v1.Integer(),0),
-    MibScalar(hw.name+(3,), v1.Integer()), MyStaticMibScalarInstance(hw.name+(3,), (0,), v1.Integer(),0),
+    MibScalar(hw.name+(1,), v1.TimeTicks()), MyStaticMibScalarInstance(hw.name+(1,), (0,), v1.TimeTicks(),tempoAbertura),
+    MibScalar(hw.name+(2,), v1.Integer()), MyStaticMibScalarInstance(hw.name+(2,), (0,), v1.Integer(),voltagemControlador),
+    MibScalar(hw.name+(3,), v1.Integer()), MyStaticMibScalarInstance(hw.name+(3,), (0,), v1.Integer(),voltagemMotor),
+    MibScalar(hw.name+(4,), v1.Gauge()), MyStaticMibScalarInstance(hw.name+(4,), (0,), v1.Gauge(),potenciaSinalNfc),
+    MibScalar(hw.name+(5,), v1.Gauge()), MyStaticMibScalarInstance(hw.name+(5,), (0,), v1.Gauge(),potenciaSinalBt),
 
 
     #----smartmib.network----#   
@@ -172,7 +183,7 @@ mibBuilder.exportSymbols(
     #**alterar para NetworkAddress()
     MibScalar(network.name+(1,), v1.OctetString()), MyStaticMibScalarInstance(network.name+(1,), (0,), v1.OctetString(),macAddressBt),
     MibScalar(network.name+(2,), v1.OctetString()), MyStaticMibScalarInstance(network.name+(2,), (0,), v1.OctetString(),pinBt),
-    MibScalar(network.name+(3,), v1.Integer()), MyStaticMibScalarInstance(network.name+(3,), (0,), v1.Integer(),0),
+    MibScalar(network.name+(3,), v1.Integer()), MyStaticMibScalarInstance(network.name+(3,), (0,), v1.Integer(),numeroTotalInterfacesRede),
     
     MibTable(network.name+(4,)).setMaxAccess('readonly'),
     MibTableRow(network.name+(4,1)).setMaxAccess('readcreate').setIndexNames((0, 'SMART-MIB', 'ifId')),
