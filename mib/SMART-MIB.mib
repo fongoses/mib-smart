@@ -289,7 +289,7 @@ btPin  OBJECT-TYPE
 
 ifCount  OBJECT-TYPE
 	SYNTAX     INTEGER
-	ACCESS     read
+	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
 		"Numero de interfaces de rede (802.3 e 802.11) existentes."
