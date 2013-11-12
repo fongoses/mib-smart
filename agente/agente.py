@@ -17,12 +17,12 @@ pinBt='2354'
 #----------------------------------------------------#
 #CONFIGURACAO DO AGENTE--------------------------#
 arqConfigName = 'agente.conf'
-if os.path.isfile(arqConfigName):
+'''if os.path.isfile(arqConfigName):
    arqConfig = open(arqConfigName, 'r')
    agenteIP = arqConfig.readline()
    arqConfig.close()
-else:
-   agenteIP = '192.168.0.105'
+else:'''
+agenteIP = '192.168.0.105'
 
 # Create SNMP engine with autogenernated engineID and pre-bound
 # to socket transport dispatcher

@@ -33,6 +33,7 @@ Raiz da smartmib (OID): 1.3.6.1.4.1.12619.1
 	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.7.0
 	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.8.0
 	snmpget -v1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.9.0
+
 #gravacao no grupo general
 	snmpset -v 1 -c private 192.168.57.1 1.3.6.1.4.1.12619.1.1.1.0 s "mario@mario.com"
 
