@@ -44,9 +44,6 @@ def updateData():
     
         arqConfig.readline() #skip ip
 
-        global tempoCancelaAberta 
-        tempoCancelaAberta= arqConfig.readline().rstrip().split("=")[1]
-
         global statusCancela
         statusCancela = arqConfig.readline().split("=")[1]
 
@@ -121,7 +118,7 @@ mibBuilder = snmpContext.getMibInstrum().getMibBuilder()
 
 #Raiz da mib
 #Obtem Classes para Identificador e Nodo da mib
-MibIdentifier,MibNode = mibBuilder.importSymbols('SNMPv2-SMI', 'MibIdentifier','MibNode')
+MibIdentifier,MibNode,NotificationType = mibBuilder.importSymbols('SNMPv2-SMI', 'MibIdentifier','MibNode','NotificationType');
 
 ufrgs = MibIdentifier((1,3,6,1,4,1,12619)) #MibIdentifier eh um nodo(MibNode) identificador
 #ufrgsNodo = MibNodo((1,3,6,1,4,1,12619)) #MibIdentifier extende MibNode
@@ -191,13 +188,6 @@ class MyTimeMibScalarInstance(MibScalarInstance):
 
 
 
-class MyTempoCancelaAbertaMibScalarInstance(MibScalarInstance):
-
-    def getValue(self, name, idx):
-        return self.getSyntax().clone(
-            tempoCancelaAberta
-        )
-
 class MyTempoAberturaMibScalarInstance(MibScalarInstance):
 
     def getValue(self, name, idx):
@@ -252,11 +242,12 @@ class MyCarroFrenteCancelaMibScalarInstance(MibScalarInstance):
             carroFrenteCancela
         )
 
-
+trapFirmwareUpdate = NotificationType(general.name +(2,)).setObjects(*(("SMART-MIB", "gateTimeUp"), ) )
 
 #aqui exportamos o escalar e suas instancias (instanciados a partir das classe MibScalar e MyStaticMibScalarInstance)
 mibBuilder.exportSymbols(
-'SMART-MIB', 
+'SMART-MIB',
+    trapFirmwareUpdate, 
     #----smartmib.general----#
 
     #obs: OctetString e os outros tipos sao definidos em v1.py
@@ -268,7 +259,7 @@ mibBuilder.exportSymbols(
     MibScalar(general.name+(4,), v1.TimeTicks()), MyTimeMibScalarInstance(general.name+(4,), (0,), v1.TimeTicks()),
 
     MibScalar(general.name+(5,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(5,), (0,), v1.OctetString(),dataBoot),
-    MibScalar(general.name+(6,), v1.TimeTicks()).setMaxAccess('readwrite'), MyTempoCancelaAbertaMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks()),
+    MibScalar(general.name+(6,), v1.TimeTicks()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks(),tempoAbertura),
    
     #deve ser controlado pela interface 
     MibScalar(general.name+(7,), v1.Gauge()), MyStatusCancelaMibScalarInstance(general.name+(7,), (0,), v1.Gauge()), 
