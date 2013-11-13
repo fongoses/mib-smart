@@ -43,11 +43,15 @@ def updateData():
         arqConfig = open(arqConfigName, 'r')
     
         arqConfig.readline() #skip ip
+
         global tempoCancelaAberta 
         tempoCancelaAberta= arqConfig.readline().rstrip().split("=")[1]
 
-        global tempoAbertura 
-        tempoAbertura= arqConfig.readline().rstrip().split("=")[1]
+        global statusCancela
+        statusCancela = arqConfig.readline().split("=")[1]
+
+        global carroFrenteCancela
+        carroFrenteCancela = arqConfig.readline().split("=")[1]
 
 
         global nAberturas
@@ -59,19 +63,15 @@ def updateData():
         global nCarrosPassaram
         nCarrosPassaram = arqConfig.readline().rstrip().split("=")[1]
 
+        global tempoAbertura 
+        tempoAbertura= arqConfig.readline().rstrip().split("=")[1]
 
         global macAddressBt
         macAddressBt = arqConfig.readline().split("=")[1]
 
-        global statusCancela
-        statusCancela = arqConfig.readline().split("=")[1]
-
-        global carroFrenteCancela
-        carroFrenteCancela = arqConfig.readline().split("=")[1]
-
-
+        
         arqConfig.close()        
-        time.sleep(2)
+        time.sleep(1)
 
 updateThread = Thread(target=updateData)
 updateThread.daemon=True
@@ -304,7 +304,7 @@ mibBuilder.exportSymbols(
     MibScalar(stats.name+(4,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(4,), (0,), v1.Counter(),0),
 
     #----smartmib.hw----#
-    MibScalar(hw.name+(1,), v1.TimeTicks()), MyStaticMibScalarInstance(hw.name+(1,), (0,), v1.TimeTicks(),tempoAbertura),
+    MibScalar(hw.name+(1,), v1.TimeTicks()), MyTempoAberturaMibScalarInstance(hw.name+(1,), (0,), v1.TimeTicks()),
     MibScalar(hw.name+(2,), v1.Integer()), MyStaticMibScalarInstance(hw.name+(2,), (0,), v1.Integer(),voltagemControlador),
     MibScalar(hw.name+(3,), v1.Integer()), MyStaticMibScalarInstance(hw.name+(3,), (0,), v1.Integer(),voltagemMotor),
     MibScalar(hw.name+(4,), v1.Gauge()), MyStaticMibScalarInstance(hw.name+(4,), (0,), v1.Gauge(),potenciaSinalNfc),
