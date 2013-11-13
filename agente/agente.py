@@ -24,13 +24,13 @@ potenciaSinalBt=6
 #----------------------------------------------------#
 #CONFIGURACAO DO AGENTE--------------------------#
 arqConfigName = 'agente.conf'
-'''if os.path.isfile(arqConfigName):
+if os.path.isfile(arqConfigName):
    arqConfig = open(arqConfigName, 'r')
    agenteIP = arqConfig.readline()
    arqConfig.close()
-else:'''
-agenteIP = '192.168.0.105'
-#agenteIP = '127.0.0.1'
+else:
+    agenteIP = '192.168.0.105'
+    #agenteIP = '127.0.0.1'
 
 # Create SNMP engine with autogenernated engineID and pre-bound
 # to socket transport dispatcher
@@ -120,7 +120,7 @@ MibTable,MibTableRow,MibTableColumn = mibBuilder.importSymbols(
 class MyStaticMibScalarInstance(MibScalarInstance):
 
 
-    def __init__(self,typeName,instId,syntax,Valor): 
+    def __init__(self,typeName,instId,syntax,Valor):
         self.valor=Valor
 
         MibScalarInstance.__init__(self,typeName,instId,syntax)
@@ -128,7 +128,7 @@ class MyStaticMibScalarInstance(MibScalarInstance):
     def getValue(self, name, idx):
         return self.getSyntax().clone(
             #'Python %s running on a %s platform' % (sys.version, sys.platform)
-            self.valor 
+            self.valor
         )
 
     def setValue(self,value, name, idx):
@@ -142,7 +142,7 @@ class MyStaticMibScalarInstance(MibScalarInstance):
 
 #aqui exportamos o escalar e suas instancias (instanciados a partir das classe MibScalar e MyStaticMibScalarInstance)
 mibBuilder.exportSymbols(
-'SMART-MIB', 
+'SMART-MIB',
     #----smartmib.general----#
 
     #obs: OctetString e os outros tipos sao definidos em v1.py
@@ -154,11 +154,19 @@ mibBuilder.exportSymbols(
     MibScalar(general.name+(4,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(4,), (0,), v1.TimeTicks(),time.time()-epochBoot),
 
     MibScalar(general.name+(5,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(5,), (0,), v1.OctetString(),dataBoot),
+<<<<<<< HEAD
     MibScalar(general.name+(6,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks(),tempoCancelaAberta),
    
     #deve ser controlado pela interface 
     MibScalar(general.name+(7,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(7,), (0,), v1.Gauge(),0), 
     
+=======
+    MibScalar(general.name+(6,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks(),tempoCancelaAberta),
+
+    #deve ser controlado pela interface
+    MibScalar(general.name+(7,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(7,), (0,), v1.Gauge(),0),
+
+>>>>>>> c40b5de09bce5d5138ff4c06569a9fc6abf26e72
     MibScalar(general.name+(8,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(8,), (0,), v1.Gauge(),0),
     MibScalar(general.name+(9,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(9,), (0,), v1.Integer(),0),
 
@@ -185,21 +193,26 @@ mibBuilder.exportSymbols(
     MibScalar(hw.name+(5,), v1.Gauge()), MyStaticMibScalarInstance(hw.name+(5,), (0,), v1.Gauge(),potenciaSinalBt),
 
 
-    #----smartmib.network----#   
-    #testar o network address e adicionar ao criar a tabela ifTable logo abaixo 
+    #----smartmib.network----#
+    #testar o network address e adicionar ao criar a tabela ifTable logo abaixo
     #**alterar para NetworkAddress()
     MibScalar(network.name+(1,), v1.OctetString()), MyStaticMibScalarInstance(network.name+(1,), (0,), v1.OctetString(),macAddressBt),
     MibScalar(network.name+(2,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(network.name+(2,), (0,), v1.OctetString(),pinBt),
     MibScalar(network.name+(3,), v1.Integer()), MyStaticMibScalarInstance(network.name+(3,), (0,), v1.Integer(),numeroTotalInterfacesRede),
+<<<<<<< HEAD
     
     MibTable(network.name+(4,)).setMaxAccess('readcreate'),
+=======
+
+    MibTable(network.name+(4,)).setMaxAccess('readonly'),
+>>>>>>> c40b5de09bce5d5138ff4c06569a9fc6abf26e72
     MibTableRow(network.name+(4,1)).setMaxAccess('readcreate').setIndexNames((0, 'SMART-MIB', 'ifId')),
     MibTableColumn(network.name+(4,1,1), v1.Integer()).setMaxAccess('readcreate'), #ifId - index da tabela
     MibTableColumn(network.name+(4,1,2), v1.OctetString()).setMaxAccess('readcreate'), #ifMacAddress
     MibTableColumn(network.name+(4,1,3), v1.Counter()).setMaxAccess('readcreate'), #ifType
 
 
-    
+
 
 )
 
