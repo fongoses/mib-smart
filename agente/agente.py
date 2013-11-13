@@ -63,7 +63,7 @@ config.addVacmUser(snmpEngine, 1, 'area-da-mib2',
                    'noAuthNoPriv', readSubTree=(1,3,6,1,2,1),writeSubTree=(1,3,6,1,2,1))
 
 #------------------MIB - UFRGS eh a nossa RAIZ---------------------
-#adiciona usuarios para area da nossa mib
+#adiciona usuarios para area da nossa mib. (1 eh o modelo de seguranca do snmpv1)
 config.addVacmUser(snmpEngine, 1, 'mibufrgs-area', 'noAuthNoPriv', readSubTree=(1,3,6,1,4,1,12619),writeSubTree=(1,3,6,1,4,1,12619))
 
 
@@ -131,6 +131,13 @@ class MyStaticMibScalarInstance(MibScalarInstance):
             self.valor 
         )
 
+    def setValue(self,value, name, idx):
+        self.valor=value
+        return self.getSyntax().clone(
+            #'Python %s running on a %s platform' % (sys.version, sys.platform)
+            self.valor
+        )
+
 
 
 #aqui exportamos o escalar e suas instancias (instanciados a partir das classe MibScalar e MyStaticMibScalarInstance)
@@ -147,7 +154,7 @@ mibBuilder.exportSymbols(
     MibScalar(general.name+(4,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(4,), (0,), v1.TimeTicks(),time.time()-epochBoot),
 
     MibScalar(general.name+(5,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(5,), (0,), v1.OctetString(),dataBoot),
-    MibScalar(general.name+(6,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks(),tempoCancelaAberta),
+    MibScalar(general.name+(6,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks(),tempoCancelaAberta),
    
     #deve ser controlado pela interface 
     MibScalar(general.name+(7,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(7,), (0,), v1.Gauge(),0), 
@@ -185,9 +192,9 @@ mibBuilder.exportSymbols(
     MibScalar(network.name+(2,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(network.name+(2,), (0,), v1.OctetString(),pinBt),
     MibScalar(network.name+(3,), v1.Integer()), MyStaticMibScalarInstance(network.name+(3,), (0,), v1.Integer(),numeroTotalInterfacesRede),
     
-    MibTable(network.name+(4,)).setMaxAccess('readonly'),
+    MibTable(network.name+(4,)).setMaxAccess('readcreate'),
     MibTableRow(network.name+(4,1)).setMaxAccess('readcreate').setIndexNames((0, 'SMART-MIB', 'ifId')),
-    MibTableColumn(network.name+(4,1,1), v1.Integer()), #ifId - index da tabela
+    MibTableColumn(network.name+(4,1,1), v1.Integer()).setMaxAccess('readcreate'), #ifId - index da tabela
     MibTableColumn(network.name+(4,1,2), v1.OctetString()).setMaxAccess('readcreate'), #ifMacAddress
     MibTableColumn(network.name+(4,1,3), v1.Counter()).setMaxAccess('readcreate'), #ifType
 
