@@ -342,7 +342,7 @@ ifType  OBJECT-TYPE
 	ACCESS     read-only
 	STATUS     mandatory
 	DESCRIPTION 
-		"Tipo da interface de rede (wireless  ou ethernet)"
+		"Tipo da interface de rede (wireless  ou ethernet). 0- Ethernet , 1-Wifi"
 	::= { ifEntry 3 }
 
 END

@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from threading import Thread
 from pysnmp.entity import engine, config
 from pysnmp.entity.rfc3413 import cmdrsp, context
 from pysnmp.carrier.asynsock.dgram import udp
@@ -13,13 +14,16 @@ dataBoot=time.ctime(epochBoot)
 tempoCancelaAberta = 60
 macAddressBt='FF:FF:A2:23:32:45'
 pinBt='2354'
-numeroTotalInterfacesRede=3
+numeroTotalInterfacesRede=2
 
 tempoAbertura=5
 voltagemControlador=5
 voltagemMotor=110
 potenciaSinalNfc=4
 potenciaSinalBt=6
+
+statusCancela=0
+carroFrenteCancela=0    
 
 #----------------------------------------------------#
 #CONFIGURACAO DO AGENTE--------------------------#
@@ -31,6 +35,47 @@ if os.path.isfile(arqConfigName):
 else:
     agenteIP = '192.168.0.105'
     #agenteIP = '127.0.0.1'
+
+
+
+def updateData():
+    while True:
+        arqConfig = open(arqConfigName, 'r')
+    
+        arqConfig.readline() #skip ip
+        global tempoCancelaAberta 
+        tempoCancelaAberta= arqConfig.readline().rstrip().split("=")[1]
+
+        global tempoAbertura 
+        tempoAbertura= arqConfig.readline().rstrip().split("=")[1]
+
+
+        global nAberturas
+        nAberturas  =  arqConfig.readline().rstrip().split("=")[1]
+
+        global nFechadas 
+        nFechadas = arqConfig.readline().rstrip().split("=")[1]
+
+        global nCarrosPassaram
+        nCarrosPassaram = arqConfig.readline().rstrip().split("=")[1]
+
+
+        global macAddressBt
+        macAddressBt = arqConfig.readline().split("=")[1]
+
+        global statusCancela
+        statusCancela = arqConfig.readline().split("=")[1]
+
+        global carroFrenteCancela
+        carroFrenteCancela = arqConfig.readline().split("=")[1]
+
+
+        arqConfig.close()        
+        time.sleep(3)
+
+updateThread = Thread(target=updateData)
+updateThread.daemon=True
+updateThread.start()
 
 # Create SNMP engine with autogenernated engineID and pre-bound
 # to socket transport dispatcher
@@ -146,6 +191,68 @@ class MyTimeMibScalarInstance(MibScalarInstance):
 
 
 
+class MyTempoCancelaAbertaMibScalarInstance(MibScalarInstance):
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            tempoCancelaAberta
+        )
+
+class MyTempoAberturaMibScalarInstance(MibScalarInstance):
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            tempoAbertura
+        )
+
+class MyNAberturasMibScalarInstance(MibScalarInstance):
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            nAberturas
+        )
+
+class MyNFechadasMibScalarInstance(MibScalarInstance):
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            nFechadas
+        )
+
+class MyNCarrosPassaramMibScalarInstance(MibScalarInstance):
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            nCarrosPassaram
+        )
+
+class MyMacAddressBtMibScalarInstance(MibScalarInstance):
+
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            macAddressBt
+        )
+
+
+class MyStatusCancelaMibScalarInstance(MibScalarInstance):
+
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            statusCancela
+        )
+
+
+class MyCarroFrenteCancelaMibScalarInstance(MibScalarInstance):
+
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            carroFrenteCancela
+        )
+
+
 
 #aqui exportamos o escalar e suas instancias (instanciados a partir das classe MibScalar e MyStaticMibScalarInstance)
 mibBuilder.exportSymbols(
@@ -155,19 +262,19 @@ mibBuilder.exportSymbols(
     #obs: OctetString e os outros tipos sao definidos em v1.py
     MibScalar(general.name+(1,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(general.name+(1,), (0,), v1.OctetString(),"Cancela Smart LTDA."),
     MibScalar(general.name+(2,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(2,), (0,), v1.OctetString(),"Firmware MIBFIRM"),
-    MibScalar(general.name+(3,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(3,), (0,), v1.OctetString(),"versao 1.0"),
+    MibScalar(general.name+(3,), v1.Gauge()), MyStaticMibScalarInstance(general.name+(3,), (0,), v1.Gauge(),"1"),
 
     ##deve ser calculado a todo o momento
-    MibScalar(general.name+(4,), v1.OctetString()), MyTimeMibScalarInstance(general.name+(4,), (0,), v1.TimeTicks()),
+    MibScalar(general.name+(4,), v1.TimeTicks()), MyTimeMibScalarInstance(general.name+(4,), (0,), v1.TimeTicks()),
 
     MibScalar(general.name+(5,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(5,), (0,), v1.OctetString(),dataBoot),
-    MibScalar(general.name+(6,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks(),tempoCancelaAberta),
+    MibScalar(general.name+(6,), v1.TimeTicks()).setMaxAccess('readwrite'), MyTempoCancelaAbertaMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks()),
    
     #deve ser controlado pela interface 
-    MibScalar(general.name+(7,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(7,), (0,), v1.Gauge(),0), 
+    MibScalar(general.name+(7,), v1.Gauge()), MyStatusCancelaMibScalarInstance(general.name+(7,), (0,), v1.Gauge()), 
     
-    MibScalar(general.name+(8,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(8,), (0,), v1.Gauge(),0),
-    MibScalar(general.name+(9,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(9,), (0,), v1.Integer(),0),
+    MibScalar(general.name+(8,), v1.Gauge()), MyCarroFrenteCancelaMibScalarInstance(general.name+(8,), (0,), v1.Gauge()),
+    MibScalar(general.name+(9,), v1.Integer()), MyStaticMibScalarInstance(general.name+(9,), (0,), v1.Integer(),0),
 
     #----smartmib.cards----#
     MibTable(cards.name+(1,)).setMaxAccess('readcreate'),
@@ -191,9 +298,9 @@ mibBuilder.exportSymbols(
 
 
     #----smartmib.stats----#
-    MibScalar(stats.name+(1,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(1,), (0,), v1.Counter(),0),
-    MibScalar(stats.name+(2,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(2,), (0,), v1.Counter(),0),
-    MibScalar(stats.name+(3,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(3,), (0,), v1.Counter(),0),
+    MibScalar(stats.name+(1,), v1.Counter()), MyNAberturasMibScalarInstance(stats.name+(1,), (0,), v1.Counter()),
+    MibScalar(stats.name+(2,), v1.Counter()), MyNFechadasMibScalarInstance(stats.name+(2,), (0,), v1.Counter()),
+    MibScalar(stats.name+(3,), v1.Counter()), MyNCarrosPassaramMibScalarInstance(stats.name+(3,), (0,), v1.Counter()),
     MibScalar(stats.name+(4,), v1.Counter()), MyStaticMibScalarInstance(stats.name+(4,), (0,), v1.Counter(),0),
 
     #----smartmib.hw----#
@@ -207,7 +314,7 @@ mibBuilder.exportSymbols(
     #----smartmib.network----#   
     #testar o network address e adicionar ao criar a tabela ifTable logo abaixo 
     #**alterar para NetworkAddress()
-    MibScalar(network.name+(1,), v1.OctetString()), MyStaticMibScalarInstance(network.name+(1,), (0,), v1.OctetString(),macAddressBt),
+    MibScalar(network.name+(1,), v1.OctetString()), MyMacAddressBtMibScalarInstance(network.name+(1,), (0,), v1.OctetString()),
     MibScalar(network.name+(2,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(network.name+(2,), (0,), v1.OctetString(),pinBt),
     MibScalar(network.name+(3,), v1.Integer()), MyStaticMibScalarInstance(network.name+(3,), (0,), v1.Integer(),numeroTotalInterfacesRede),
     
@@ -219,9 +326,9 @@ mibBuilder.exportSymbols(
     MibTableColumn(network.name+(4,1,2), v1.OctetString()).setMaxAccess('readcreate'), #ifMacAddress    
         MyStaticMibScalarInstance(network.name+(4,1,2), (0,), v1.OctetString(),"AA:BB:CC:FF:EE:DD"), #instancia1
         MyStaticMibScalarInstance(network.name+(4,1,2), (100,), v1.OctetString(),"D5:76:00:00:C5:03"), #instancia 2
-    MibTableColumn(network.name+(4,1,3), v1.Counter()).setMaxAccess('readcreate'), #ifType    
-        MyStaticMibScalarInstance(network.name+(4,1,3), (0,), v1.Counter(),1), #instancia1
-        MyStaticMibScalarInstance(network.name+(4,1,3), (100,), v1.Counter(),1)  #instancia2
+    MibTableColumn(network.name+(4,1,3), v1.Integer()).setMaxAccess('readcreate'), #ifType    
+        MyStaticMibScalarInstance(network.name+(4,1,3), (0,), v1.Integer(),0), #instancia1
+        MyStaticMibScalarInstance(network.name+(4,1,3), (100,), v1.Integer(),1)  #instancia2
 
 )
 
