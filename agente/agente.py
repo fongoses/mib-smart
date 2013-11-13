@@ -30,7 +30,7 @@ carroFrenteCancela=0
 arqConfigName = 'agente.conf'
 if os.path.isfile(arqConfigName):
    arqConfig = open(arqConfigName, 'r')
-   agenteIP = arqConfig.readline()
+   agenteIP = arqConfig.readline().rstrip().split("=")[1]
    arqConfig.close()
 else:
     agenteIP = '192.168.0.105'
@@ -71,7 +71,7 @@ def updateData():
 
 
         arqConfig.close()        
-        time.sleep(3)
+        time.sleep(2)
 
 updateThread = Thread(target=updateData)
 updateThread.daemon=True
