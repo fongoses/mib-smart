@@ -39,8 +39,23 @@ Raiz da smartmib (OID): 1.3.6.1.4.1.12619.1
 
 
 #Consultas Grupo Cards ( smartmib.1 ou 1.3.6.1.4.1.12619.1.1 ):
-...
+#exibir toda a tabela
+	snmpwalk -v1 -c private 192.168.0.105 1.3.6.1.4.1.12619.1.2.1 #obs: passamos o Entry e nao o Table para o walk)
 
+#exibir a instancia 0
+	snmpwalk -v1 -c private 192.168.0.105 1.3.6.1.4.1.12619.1.2.1 #obs: passamos o Entry e nao o Table para o walk)
+
+
+	#Obs. tabela eh acessada por .table.Entry(ou row,sempre 1).coluna.instancia
+	snmpgetnext -v1 -c private 192.168.0.105 1.3.6.1.4.1.12619.1.2.1 #para obtermos o primeiro indice da tabela (que eh 0, se nao me engano)
+	
+	ou(caso saibamos o valor de indice da primeira instancia como sendo 0)
+	snmpget -v1 -c private 192.168.0.105 1.3.6.1.4.1.12619.1.2.1.0 #retorna coluna 1 da instancia 0
+	snmpget -v1 -c private 192.168.0.105 1.3.6.1.4.1.12619.1.2.2.0 #retorna coluna 2 da instancia 0
+	snmpget -v1 -c private 192.168.0.105 1.3.6.1.4.1.12619.1.2.3.0 #retorna coluna 3 da instancia 0
+	
+	
+		
 
 
 #Consultas Grupo Stats
