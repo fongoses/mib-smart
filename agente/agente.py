@@ -29,8 +29,8 @@ arqConfigName = 'agente.conf'
    agenteIP = arqConfig.readline()
    arqConfig.close()
 else:'''
-#agenteIP = '192.168.0.105'
-agenteIP = '127.0.0.1'
+agenteIP = '192.168.0.105'
+#agenteIP = '127.0.0.1'
 
 # Create SNMP engine with autogenernated engineID and pre-bound
 # to socket transport dispatcher
@@ -60,11 +60,11 @@ config.addV1System(snmpEngine, 'mibufrgs-area', 'private')
 #os oids sao passados como os parametros readSubTree e writeSubTree,
 #respectivamente (ver help da documentacao)
 config.addVacmUser(snmpEngine, 1, 'area-da-mib2',
-                   'noAuthNoPriv', (1,3,6,1,2,1),(1,3,6,1,2,1))
+                   'noAuthNoPriv', readSubTree=(1,3,6,1,2,1),writeSubTree=(1,3,6,1,2,1))
 
 #------------------MIB - UFRGS eh a nossa RAIZ---------------------
 #adiciona usuarios para area da nossa mib
-config.addVacmUser(snmpEngine, 1, 'mibufrgs-area', 'noAuthNoPriv', (1,3,6,1,4,1,12619,1),(1,3,6,1,4,1,12619,1))
+config.addVacmUser(snmpEngine, 1, 'mibufrgs-area', 'noAuthNoPriv', readSubTree=(1,3,6,1,4,1,12619),writeSubTree=(1,3,6,1,4,1,12619))
 
 
 # Get default SNMP context this SNMP engine serves
@@ -139,7 +139,7 @@ mibBuilder.exportSymbols(
     #----smartmib.general----#
 
     #obs: OctetString e os outros tipos sao definidos em v1.py
-    MibScalar(general.name+(1,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(1,), (0,), v1.OctetString(),"Cancela Smart LTDA.").setMaxAccess('readwrite'),
+    MibScalar(general.name+(1,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(general.name+(1,), (0,), v1.OctetString(),"Cancela Smart LTDA."),
     MibScalar(general.name+(2,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(2,), (0,), v1.OctetString(),"Firmware MIBFIRM"),
     MibScalar(general.name+(3,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(3,), (0,), v1.OctetString(),"versao 1.0"),
 
@@ -182,7 +182,7 @@ mibBuilder.exportSymbols(
     #testar o network address e adicionar ao criar a tabela ifTable logo abaixo 
     #**alterar para NetworkAddress()
     MibScalar(network.name+(1,), v1.OctetString()), MyStaticMibScalarInstance(network.name+(1,), (0,), v1.OctetString(),macAddressBt),
-    MibScalar(network.name+(2,), v1.OctetString()), MyStaticMibScalarInstance(network.name+(2,), (0,), v1.OctetString(),pinBt),
+    MibScalar(network.name+(2,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(network.name+(2,), (0,), v1.OctetString(),pinBt),
     MibScalar(network.name+(3,), v1.Integer()), MyStaticMibScalarInstance(network.name+(3,), (0,), v1.Integer(),numeroTotalInterfacesRede),
     
     MibTable(network.name+(4,)).setMaxAccess('readonly'),
