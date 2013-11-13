@@ -170,24 +170,24 @@ mibBuilder.exportSymbols(
     MibScalar(general.name+(9,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(9,), (0,), v1.Integer(),0),
 
     #----smartmib.cards----#
-    MibTable(cards.name).setMaxAccess('readcreate'),
-    MibTableRow(cards.name+(1,)).setMaxAccess('readcreate').setIndexNames((0, 'SMART-MIB', 'cardId')),
-    MibTableColumn(cards.name+(1,1), v1.Integer()), #cardId - index da tabela
-        MyStaticMibScalarInstance(cards.name+(1,1), (0,), v1.Integer(),1456),#instancia0
-        MyStaticMibScalarInstance(cards.name+(1,1), (10,), v1.Integer(),223),#instancia1
-        MyStaticMibScalarInstance(cards.name+(1,1), (35,), v1.Integer(),789),#instancia2
+    MibTable(cards.name+(1,)).setMaxAccess('readcreate'),
+    MibTableRow(cards.name+(1,1)).setMaxAccess('readcreate').setIndexNames((0, 'SMART-MIB', 'cardId')),
+    MibTableColumn(cards.name+(1,1,1), v1.Integer()), #cardId - index da tabela
+        MyStaticMibScalarInstance(cards.name+(1,1,1), (0,), v1.Integer(),1456),#instancia0
+        MyStaticMibScalarInstance(cards.name+(1,1,1), (10,), v1.Integer(),223),#instancia1
+        MyStaticMibScalarInstance(cards.name+(1,1,1), (35,), v1.Integer(),789),#instancia2
 
 
-    MibTableColumn(cards.name+(1,2), v1.OctetString()).setMaxAccess('readcreate'), #cardDescription
-        MyStaticMibScalarInstance(cards.name+(1,2), (0,), v1.OctetString(),"Bluetooth"),#instancia0
-        MyStaticMibScalarInstance(cards.name+(1,2), (10,), v1.OctetString(),"RFID"),#instancia1
-        MyStaticMibScalarInstance(cards.name+(1,2), (35,), v1.OctetString(),"QRCODE"),#instancia2
+    MibTableColumn(cards.name+(1,1,2), v1.OctetString()).setMaxAccess('readcreate'), #cardDescription
+        MyStaticMibScalarInstance(cards.name+(1,1,2), (0,), v1.OctetString(),"Bluetooth"),#instancia0
+        MyStaticMibScalarInstance(cards.name+(1,1,2), (10,), v1.OctetString(),"RFID"),#instancia1
+        MyStaticMibScalarInstance(cards.name+(1,1,2), (35,), v1.OctetString(),"QRCODE"),#instancia2
 
 
-    MibTableColumn(cards.name+(1,3), v1.Counter()).setMaxAccess('readcreate'), #cardCount
-        MyStaticMibScalarInstance(cards.name+(1,3), (0,), v1.Counter(),10),#instancia0
-        MyStaticMibScalarInstance(cards.name+(1,3), (10,), v1.Counter(),4),#instancia1
-        MyStaticMibScalarInstance(cards.name+(1,3), (35,), v1.Counter(),8),#instancia2
+    MibTableColumn(cards.name+(1,1,3), v1.Counter()).setMaxAccess('readcreate'), #cardCount
+        MyStaticMibScalarInstance(cards.name+(1,1,3), (0,), v1.Counter(),10),#instancia0
+        MyStaticMibScalarInstance(cards.name+(1,1,3), (10,), v1.Counter(),4),#instancia1
+        MyStaticMibScalarInstance(cards.name+(1,1,3), (35,), v1.Counter(),8),#instancia2
 
 
     #----smartmib.stats----#
