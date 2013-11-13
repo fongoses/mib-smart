@@ -24,13 +24,13 @@ potenciaSinalBt=6
 #----------------------------------------------------#
 #CONFIGURACAO DO AGENTE--------------------------#
 arqConfigName = 'agente.conf'
-'''if os.path.isfile(arqConfigName):
+if os.path.isfile(arqConfigName):
    arqConfig = open(arqConfigName, 'r')
    agenteIP = arqConfig.readline()
    arqConfig.close()
-else:'''
-agenteIP = '192.168.0.105'
-#agenteIP = '127.0.0.1'
+else:
+    agenteIP = '192.168.0.105'
+    #agenteIP = '127.0.0.1'
 
 # Create SNMP engine with autogenernated engineID and pre-bound
 # to socket transport dispatcher
@@ -127,16 +127,23 @@ class MyStaticMibScalarInstance(MibScalarInstance):
 
     def getValue(self, name, idx):
         return self.getSyntax().clone(
-            #'Python %s running on a %s platform' % (sys.version, sys.platform)
             self.valor 
         )
 
     def setValue(self,value, name, idx):
         self.valor=value
         return self.getSyntax().clone(
-            #'Python %s running on a %s platform' % (sys.version, sys.platform)
             self.valor
         )
+
+class MyTimeMibScalarInstance(MibScalarInstance):
+
+
+    def getValue(self, name, idx):
+        return self.getSyntax().clone(
+            time.time()-epochBoot
+        )
+
 
 
 
@@ -151,7 +158,7 @@ mibBuilder.exportSymbols(
     MibScalar(general.name+(3,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(3,), (0,), v1.OctetString(),"versao 1.0"),
 
     ##deve ser calculado a todo o momento
-    MibScalar(general.name+(4,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(4,), (0,), v1.TimeTicks(),time.time()-epochBoot),
+    MibScalar(general.name+(4,), v1.OctetString()), MyTimeMibScalarInstance(general.name+(4,), (0,), v1.TimeTicks()),
 
     MibScalar(general.name+(5,), v1.OctetString()), MyStaticMibScalarInstance(general.name+(5,), (0,), v1.OctetString(),dataBoot),
     MibScalar(general.name+(6,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(general.name+(6,), (0,), v1.TimeTicks(),tempoCancelaAberta),
@@ -173,14 +180,14 @@ mibBuilder.exportSymbols(
 
     MibTableColumn(cards.name+(1,2), v1.OctetString()).setMaxAccess('readcreate'), #cardDescription
         MyStaticMibScalarInstance(cards.name+(1,2), (0,), v1.OctetString(),"Bluetooth"),#instancia0
-        MyStaticMibScalarInstance(cards.name+(1,2), (1,), v1.OctetString(),"RFID"),#instancia1
-        MyStaticMibScalarInstance(cards.name+(1,2), (2,), v1.OctetString(),"QRCODE"),#instancia2
+        MyStaticMibScalarInstance(cards.name+(1,2), (10,), v1.OctetString(),"RFID"),#instancia1
+        MyStaticMibScalarInstance(cards.name+(1,2), (35,), v1.OctetString(),"QRCODE"),#instancia2
 
 
     MibTableColumn(cards.name+(1,3), v1.Counter()).setMaxAccess('readcreate'), #cardCount
         MyStaticMibScalarInstance(cards.name+(1,3), (0,), v1.Counter(),10),#instancia0
-        MyStaticMibScalarInstance(cards.name+(1,3), (1,), v1.Counter(),4),#instancia1
-        MyStaticMibScalarInstance(cards.name+(1,3), (2,), v1.Counter(),8),#instancia2
+        MyStaticMibScalarInstance(cards.name+(1,3), (10,), v1.Counter(),4),#instancia1
+        MyStaticMibScalarInstance(cards.name+(1,3), (35,), v1.Counter(),8),#instancia2
 
 
     #----smartmib.stats----#
