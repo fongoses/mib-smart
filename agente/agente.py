@@ -16,7 +16,7 @@ macAddressBt='FF:FF:A2:23:32:45'
 pinBt='2354'
 numeroTotalInterfacesRede=2
 
-tempoAbertura=5
+tempoAbertura=5 #tempo permanencia cancela em aberto
 voltagemControlador=5
 voltagemMotor=110
 potenciaSinalNfc=4
@@ -44,12 +44,14 @@ def updateData():
     
         arqConfig.readline() #skip ip
 
+        global tempoAbertura #tempo permanencia em aberto 
+        tempoAbertura= arqConfig.readline().rstrip().split("=")[1]
+
         global statusCancela
         statusCancela = arqConfig.readline().split("=")[1]
 
         global carroFrenteCancela
         carroFrenteCancela = arqConfig.readline().split("=")[1]
-
 
         global nAberturas
         nAberturas  =  arqConfig.readline().rstrip().split("=")[1]
@@ -59,9 +61,6 @@ def updateData():
 
         global nCarrosPassaram
         nCarrosPassaram = arqConfig.readline().rstrip().split("=")[1]
-
-        global tempoAbertura 
-        tempoAbertura= arqConfig.readline().rstrip().split("=")[1]
 
         global macAddressBt
         macAddressBt = arqConfig.readline().split("=")[1]
