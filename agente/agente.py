@@ -332,6 +332,7 @@ mibBuilder.exportSymbols(
 cmdrsp.GetCommandResponder(snmpEngine, snmpContext)
 cmdrsp.SetCommandResponder(snmpEngine, snmpContext)
 cmdrsp.NextCommandResponder(snmpEngine, snmpContext)
+cmdrsp.BulkCommandResponder(snmpEngine, snmpContext)
 
 # Register an imaginary never-ending job to keep I/O dispatcher running forever
 snmpEngine.transportDispatcher.jobStarted(1)
