@@ -1,6 +1,6 @@
 <?php
-	$agenteIP="192.168.0.105";
-	
+	include('gerente.conf.php');
+		
     $networkValor_2=$_POST['network2'];
     
     if($networkValor_2){

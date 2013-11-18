@@ -1,7 +1,7 @@
 <?php
-	$agenteIP="192.168.0.105";
-	//$agenteIP="127.0.0.1";
-
+	
+	include("gerente.conf.php");
+	echo 'IP Agente: '.$agenteIP;
 	//general
 	echo "<hr>";
     echo "<h1> Dados do Fabricante do dispositivo</h1>";

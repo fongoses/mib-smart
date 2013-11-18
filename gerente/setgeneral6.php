@@ -1,5 +1,5 @@
 <?php
-	$agenteIP="192.168.0.105";
+	include('gerente.conf.php');
 	
     $generalValor_6=$_POST['general6'];  
       

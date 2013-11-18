@@ -44,9 +44,6 @@ def updateData():
     
         arqConfig.readline() #skip ip
 
-        global tempoAbertura #tempo permanencia em aberto 
-        tempoAbertura= arqConfig.readline().rstrip().split("=")[1]
-
         global statusCancela
         statusCancela = arqConfig.readline().split("=")[1]
 
