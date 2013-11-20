@@ -1,8 +1,20 @@
 <?php
 	
-	include("gerente.conf.php");
+	
+	
+	echo "<!DOCTYPE html>";
+	echo "<html lang='en'>";
+	echo "<head>";
+	echo "<script src='js/jquery.js'></script>";
+	echo "<script src='js/jquery-ui.js'></script>";
+	echo "</head>";
+	
+	include("gerente.conf.php");	
+	include("graficosnmp.php");
+	
 	echo 'IP Agente: '.$agenteIP;
 	//general
+	echo "<body>";
 	echo "<hr>";
     echo "<h1> Dados do Fabricante do dispositivo</h1>";
     $generalGet_1 = snmpget($agenteIP, "private", "1.3.6.1.4.1.12619.1.1.1.0");
@@ -73,7 +85,7 @@
     $stats_2=str_replace("\"","",explode(": ",$statsGet_2)[1]);
 
     $statsGet_3 = snmpget($agenteIP, "private", "1.3.6.1.4.1.12619.1.3.3.0");
-    $stats_3=str_replace("\"","",explode(": ",$statsGet_3)[1]);
+    $stats_3=str_replace("\"","",explode(": ",$statsGet_3)[1]);    
     
     $statsGet_4 = snmpget($agenteIP, "private", "1.3.6.1.4.1.12619.1.3.4.0");    
     $stats_4=str_replace("\"","",explode(": ",$statsGet_4)[1]);
@@ -153,6 +165,14 @@
     	echo '<tr><td>'.str_replace("\"","",explode(": ",$ifTableWalk[$row])[1]).'</td><td>'.str_replace("\"","",explode(": ",$ifTableWalk[$row+$ifTableRowsNumber])[1]).'</td><td>'.(str_replace("\"","",explode(": ",$ifTableWalk[$row+$ifTableRowsNumber*2])[1])?"Wifi":"Ethernet").'</td></tr>';
     echo "</table>";
     echo "<hr>";
+    echo "</body>";
+    
+    
+    //Graficos
+    echo "<h1>Graficos</h1>";
+   	
+	plota();
+    
     
     
 

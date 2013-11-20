@@ -1,0 +1,7 @@
+1)Threads necessita de:
+    pthreads (pecl)
+    
+    Instalando:
+        1)apt-get install php-pear
+        2)apt-get install php5-dev
+        3)pecl install pthreads

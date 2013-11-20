@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 import sys
 import time
@@ -299,7 +300,6 @@ mibBuilder.exportSymbols(
 
 
     #----smartmib.network----#   
-    #testar o network address e adicionar ao criar a tabela ifTable logo abaixo 
     #**alterar para NetworkAddress()
     MibScalar(network.name+(1,), v1.OctetString()), MyMacAddressBtMibScalarInstance(network.name+(1,), (0,), v1.OctetString()),
     MibScalar(network.name+(2,), v1.OctetString()).setMaxAccess('readwrite'), MyStaticMibScalarInstance(network.name+(2,), (0,), v1.OctetString(),pinBt),
